@@ -2,7 +2,6 @@
 using namespace std;
 
 
-int main(char args[], int argv){
-    
+int main(){
     return 0;
 }
