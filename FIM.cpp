@@ -22,7 +22,7 @@ std::string read_file(const std::string &filepath){
 	ssize_t bytes_read;
 
 	while ((bytes_read = read(fd, buffer, sizeof(buffer))) > 0){
-		content.append(bytes_read);
+		content.append(buffer, bytes_read);
 	}
 
 	close(fd);
