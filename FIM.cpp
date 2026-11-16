@@ -9,16 +9,23 @@
 namespace fs = std::filesystem;
 
 std::string read_file(const std::string &filepath){
-	std::string buffer[BUFFER_MAX];
+	char buffer[BUFFER_MAX];
 	
 	int fd = open(filepath.c_str(), O_RDONLY);
 
 	if (fd < 0){
-		close(fd);
+		perror(FILE_OPEN_ERROR);
 		return FILE_OPEN_ERROR;
 	}
 
+	std::string content;
 	ssize_t bytes_read;
-	while ((bytes_read = read(fd, buffer, sizeof(buffer)) > 0))
+
+	while ((bytes_read = read(fd, buffer, sizeof(buffer))) > 0){
+		content.append(bytes_read);
+	}
+
+	close(fd);
+	return content;
 		
 }
