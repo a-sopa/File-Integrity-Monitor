@@ -14,5 +14,7 @@ struct FileState {
 	std::string sha256;
 };
 
+std::string read_file(const std::string &filepath);
+std::string calculate_sha256(const std::string &file_data);
 
 #endif 
