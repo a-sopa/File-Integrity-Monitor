@@ -13,7 +13,8 @@
 
 namespace fs = std::filesystem;
 
-std::string scan_directory(const std::string &dir_path){
+int scan_directory(const std::string &dir_path, std::vector<std::string> &files){
+	int num_files = 0;
 	if (!fs::exists(dir_path) || !fs::is_directory(dir_path)){
 		std::cerr << "INVALID DIRECTORY" << dir_path << std::endl;
 		return;
@@ -22,10 +23,11 @@ std::string scan_directory(const std::string &dir_path){
 	for (const auto &entry : fs::recursive_directory_iterator(dir_path, fs::directory_options::skip_permission_denied)){
 		if (entry.is_regular_file()){
 			std::string filepath = entry.path().string();
-			return filepath;
+			files.push_back(filepath);
+			num_files++;
 		}
 	}
-	return EMPTY_DIR_ERROR;
+	return num_files;
 }
 
 std::string read_file(const std::string &filepath){

@@ -18,6 +18,7 @@ struct FileState {
 	std::string sha256;
 };
 
+int scan_directory(const std::string &dir_path, std::vector<std::string> &files);
 std::string read_file(const std::string &filepath);
 std::string calculate_sha256(const std::string &file_data);
 
