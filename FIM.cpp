@@ -7,10 +7,26 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
+#include <vector>
 
 //sha256sum File-Integrity-Monitor/main.cpp
 
 namespace fs = std::filesystem;
+
+std::string scan_directory(const std::string &dir_path){
+	if (!fs::exists(dir_path) || !fs::is_directory(dir_path)){
+		std::cerr << "INVALID DIRECTORY" << dir_path << std::endl;
+		return;
+	}
+
+	for (const auto &entry : fs::recursive_directory_iterator(dir_path, fs::directory_options::skip_permission_denied)){
+		if (entry.is_regular_file()){
+			std::string filepath = entry.path().string();
+			return filepath;
+		}
+	}
+	return EMPTY_DIR_ERROR;
+}
 
 std::string read_file(const std::string &filepath){
 	char buffer[BUFFER_MAX];
