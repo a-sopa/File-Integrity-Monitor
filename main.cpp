@@ -3,10 +3,12 @@
 #include <vector>
 #include "FIM.hpp"
 #include "auxiliar.hpp"
+
 using namespace std;
 
-
 int main(){
+	HashMap baseline = snapshot(DIRECTORY_TO_READ);
+
 	std::string content, hash;
 	
 	std::vector<std::string> fileList;
@@ -17,9 +19,12 @@ int main(){
 	}
 
 	while(1){
-		content = read_file("config.txt");
-		hash = calculate_sha256(content);
-		std::cout << hash << endl;
+		for (int i = 0; i < num_files; i++){
+			content = read_file(fileList[i]);
+			hash = calculate_sha256(content);
+			std::cout << hash << endl;
+		}
+	
 		sleep(2); //Scan in between 2 seconds
 	}
 	return 0;

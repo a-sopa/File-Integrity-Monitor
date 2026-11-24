@@ -1,13 +1,4 @@
 #include "FIM.hpp"
-#include <iostream>
-#include <filesystem>
-#include <fcntl.h>
-#include <unistd.h>
-#include <openssl/evp.h>
-#include <iomanip>
-#include <sstream>
-#include <string>
-#include <vector>
 
 //sha256sum File-Integrity-Monitor/main.cpp
 
@@ -16,8 +7,8 @@ namespace fs = std::filesystem;
 int scan_directory(const std::string &dir_path, std::vector<std::string> &files){
 	int num_files = 0;
 	if (!fs::exists(dir_path) || !fs::is_directory(dir_path)){
-		std::cerr << "INVALID DIRECTORY" << dir_path << std::endl;
-		return;
+		std::cerr << "INVALID DIRECTORY " << dir_path << std::endl;
+		return -1;
 	}
 
 	for (const auto &entry : fs::recursive_directory_iterator(dir_path, fs::directory_options::skip_permission_denied)){
@@ -30,20 +21,25 @@ int scan_directory(const std::string &dir_path, std::vector<std::string> &files)
 	return num_files;
 }
 
-std::string read_file(const std::string &filepath){
+std::optional<std::string> read_file(const std::string &filepath){
 	char buffer[BUFFER_MAX];
-	
-	int fd = open(filepath.c_str(), O_RDONLY);
 
+	int fd = open(filepath.c_str(), O_RDONLY | O_NOFOLLOW);
 	if (fd < 0){
 		perror(FILE_OPEN_ERROR);
-		return FILE_OPEN_ERROR;
+		return std::nullopt;
 	}
 
 	std::string content;
 	ssize_t bytes_read;
 
-	while ((bytes_read = read(fd, buffer, sizeof(buffer))) > 0){
+	while ((bytes_read = read(fd, buffer, sizeof(buffer))) != 0){
+		if (bytes_read < 0){
+			if (errno == EINTR) continue; 
+			perror("ERROR: read failed");
+			close(fd);
+			return std::nullopt;
+		}
 		content.append(buffer, bytes_read);
 	}
 
@@ -70,4 +66,17 @@ std::string calculate_sha256(const std::string &file_data){
 		ss << std::hex << std::setw(2) << std::setfill('0') << (int)hash[i];
 	}
 	return ss.str();
+}
+
+HashMap snapshot(const std::string &dir){
+	HashMap m;
+	std::vector<std::string> files;
+	scan_directory(dir, files);
+
+	for (const std::string &f : files){
+		std::optional<std::string> content = read_file(f);
+		if (!content) continue;
+		m[f] = calculate_sha256(*content);
+	}
+	return m;
 }
