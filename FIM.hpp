@@ -22,7 +22,7 @@ using HashMap = std::unordered_map<std::string, std::string>;
 #define FILE_OPEN_ERROR "ERROR: Could not open the file"
 #define EMPTY_DIR_ERROR "ERROR: Empty directory"
 
-#define DIRECTORY_TO_READ "/tests"
+#define DIRECTORY_TO_READ "tests"
 
 
 //Saves the state of a file
