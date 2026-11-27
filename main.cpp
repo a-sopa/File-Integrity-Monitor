@@ -2,6 +2,8 @@
 #include <unistd.h>
 #include <vector>
 #include <algorithm>
+#include <unordered_set>
+#include <cstdlib>
 #include "FIM.hpp"
 #include "auxiliar.hpp"
 
@@ -22,9 +24,12 @@ int main(){
 		cerr << EMPTY_DIR_ERROR << endl;
 	}
 	
-	std::vector<std::string> flagged_files; //Files that have been compromised
+	std::unordered_set<std::string> flagged_files; //Files that have been compromised
 
 	while(1){
+		system("clear");
+		fim_title();
+
 		bool compromised = false;
 		for (int i = 0; i < num_files; i++){
 			std::optional<std::string> content = read_file(fileList[i]);
@@ -35,7 +40,7 @@ int main(){
 			if (baseline.count(fileList[i]) && baseline[fileList[i]] != hash){
 				alert(fileList[i]); //Alert the user
 				compromised = true;
-				flagged_files.push_back(fileList[i]); //Add the file to the attention list
+				flagged_files.insert(fileList[i]); //Add the file to the attention list
 			}
 			else if (std::find(flagged_files.begin(), flagged_files.end(), fileList[i]) != flagged_files.end()){
 				attention(fileList[i]);

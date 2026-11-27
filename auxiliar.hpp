@@ -13,4 +13,6 @@ void no_alert();
 
 void attention(std::string filename);
 
+void fim_title();
+
 #endif 

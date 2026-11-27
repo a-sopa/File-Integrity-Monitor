@@ -1,4 +1,5 @@
 #include <iostream>
+#include "FIM.hpp"
 #include "auxiliar.hpp"
 using namespace std;
 
@@ -12,4 +13,8 @@ void no_alert(){
 
 void attention(std::string filename){
     std::cout << ATTENTION_TEXT << filename << '\n';
+}
+
+void fim_title(){
+    std::cout << "=== File Integrity Monitor (" << DIRECTORY_TO_READ << ") ===\n\n";
 }
