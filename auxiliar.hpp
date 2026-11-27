@@ -9,4 +9,8 @@
 
 void alert(std::string filename);
 
+void no_alert();
+
+void attention(std::string filename);
+
 #endif 
